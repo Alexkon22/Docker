@@ -1,0 +1,35 @@
+name: Nginx Test
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test-nginx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Запустить nginx
+        run: |
+          docker run -d --name my-nginx -p 8080:80 nginx:latest
+
+      - name: Подождать запуск
+        run: sleep 5
+
+      - name: Показать запущенные контейнеры
+        run: docker ps
+
+      - name: Проверить, что nginx отвечает
+        run: |
+          echo "Стучимся в nginx..."
+          curl -f http://localhost:8080 && echo "✅ Nginx работает!"
+
+      - name: Показать содержимое страницы
+        run: curl http://localhost:8080
+
+      - name: Логи nginx
+        if: always()
+        run: docker logs my-nginx
+
+      - name: Остановить контейнер
+        if: always()
+        run: docker stop my-nginx
