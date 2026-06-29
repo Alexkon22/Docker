@@ -1,0 +1,21 @@
+name: Docker Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Скачать код
+        uses: actions/checkout@v5
+
+      - name: Собрать Docker-образ
+        run: docker build -t my-app:latest .
+
+      - name: Запустить контейнер для проверки
+        run: docker run --rm my-app:latest
+
+      - name: Показать список образов
+        run: docker images
